@@ -1,0 +1,48 @@
+{% extends 'main/index.html' %}
+{% block main %}
+    <div class="row">
+        <div>{{calendar |safe}}</div>
+    </div>
+
+    <div class="row">
+        {% if notes %}
+            {% for n in notes %}
+                <div class="col-md-3" style="margin-right:40rem;">
+                    <div class="card" style="width: 40rem; margin-right: 2rem; margin-bottom: 2rem;">
+    <!--                  <img src="..." class="card-img-top" alt="...">-->
+                        <div class="card card-body">
+                            <h5 class="card-title">{{n.workout.name}} - {{n.date}}</h5>
+                            <p class="card-text">{{n.text}}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-md-3" style="margin-right:40rem;">
+            <form action="{% url 'exercises' %}" method="get">
+                <input name="q" type="text" value="{{ request.GET.q }}" placeholder="Поиск..." class="form-control" style="width:25rem;display:inline-block;">
+                <button type="submit" class="btn btn-outline-secondary" style="display:inline-block; margin-bottom:0.245rem;">Найти</button>
+            </form><br><br><br>
+        </div>
+    </div>
+
+    <style>
+        .month {
+            width: 50rem;
+        }
+    </style>
+{% endblock %}
+
+
+
+<table border="0" cellpadding="0" cellspacing="0" class="month">
+<tr><th colspan="7" class="month">декабря 2022</th></tr>
+<tr><th class="mon">Пн</th><th class="tue">Вт</th><th class="wed">Ср</th><th class="thu">Чт</th><th class="fri">Пт</th><th class="sat">Сб</th><th class="sun">Вс</th></tr>
+<tr><td class="noday">&nbsp;</td><td class="noday">&nbsp;</td><td class="noday">&nbsp;</td><td class="thu">1</td><td class="fri">2</td><td class="sat">3</td><td class="sun">4</td></tr>
+<tr><td class="mon">5</td><td class="tue">6</td><td class="wed">7</td><td class="thu">8</td><td class="fri">9</td><td class="sat">10</td><td class="sun">11</td></tr>
+<tr><td class="mon">12</td><td class="tue">13</td><td class="wed">14</td><td class="thu">15</td><td class="fri">16</td><td class="sat">17</td><td class="sun">18</td></tr>
+<tr><td class="mon">19</td><td class="tue">20</td><td class="wed">21</td><td class="thu">22</td><td class="fri">23</td><td class="sat">24</td><td class="sun">25</td></tr>
+<tr><td class="mon">26</td><td class="tue">27</td><td class="wed">28</td><td class="thu">29</td><td class="fri">30</td><td class="sat">31</td><td class="noday">&nbsp;</td></tr>
+</table>

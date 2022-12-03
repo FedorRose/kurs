@@ -1,0 +1,47 @@
+{% extends 'main/index.html' %}
+{% block main %}
+
+    <div class="row">
+        <h2>{{workout.name}}</h2><br><br><br>
+        <h5>Категория - {{workout.category}}</h5>
+        <h5>Инвентарь - {{workout.inventory}}</h5>
+        <h5>Уровень сложности - {{workout.complexity}}</h5>
+        <h5>Тренер {{workout.trainer}}</h5><br><br><br>
+        <h5>{{workout.desc}}</h5><br><br><br>
+        {% if active %}
+            <a href="#" class="btn btn-success" style="width:15rem;">Открыть календарь</a>
+        {% else %}
+            <a href="{% url 'start_workout' workout.slug %}" class="btn btn-primary" style="width:15rem;">Начать тренировку!</a>
+        {% endif %}
+    </div><br><br>
+
+    <div class="row">
+        {% if exercises_1 or exercises_2 or exercises_3 or exercises_4 %}
+            <h3>Упражнения</h3><br>
+        {% endif %}
+        {% if exercises_1 %}
+            <h4 style="margin-left:1rem;">День - 1</h4>
+            <div style="margin-left:3rem;">
+                {% for exercise in exercises_1 %}
+                    <h5>{{exercise.number}}. {{exercise.exercise.name}}</h5>
+                    <h6>Подходы - {{exercise.approaches}}</h6>
+                    <h6>Повторения - {{exercise.repetitions}}</h6>
+    <!--                <p>{{exercise.exercise.desc}}</p>-->
+                {% endfor %}
+            </div><br><br>
+        {% endif %}
+        {% if exercises_1 %}
+            <h4 style="margin-left:1rem;">День - 2</h4>
+            <div style="margin-left:3rem;">
+                {% for exercise in exercises_2 %}
+                    <h5>{{exercise.number}}. {{exercise.exercise.name}}</h5>
+                    <h6>Подходы - {{exercise.approaches}}</h6>
+                    <h6>Повторения - {{exercise.repetitions}}</h6>
+        <!--                <p>{{exercise.exercise.desc}}</p>-->
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <br>
+
+{% endblock %}

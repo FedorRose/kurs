@@ -1,0 +1,68 @@
+{% extends 'main/index.html' %}
+{% block main %}
+
+    <div class="row">
+        <h2 style="margin-bottom:20px;">Активные тренировки</h2>
+        {% if active_workouts %}
+            {% for aw in active_workouts %}
+                <div class="col-md-3">
+                    <div class="card" style="width: 18rem; margin-right: 2rem; margin-bottom: 2rem;">
+<!--                              <img src="..." class="card-img-top" alt="...">-->
+                      <div class="card card-body">
+                        <h5 class="card-title">{{aw.workout.name}}</h5>
+                        <p class="card-text">{{aw.workout.desc}}</p>
+                        <a href="{% url 'workout' aw.workout.slug %}" class="btn btn-primary">Перейти к тренировке</a>
+                      </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-md-3">
+                <div style="white-space: nowrap;">
+                    <p style="display: inline-block;">У Вас пока нет активных тренировок.</p>
+                    <a href="{% url 'workouts' %}" style="text-decoration: none; margin-bottom: 5px; margin-left: 5px;" class="btn btn-outline-primary btn-sm">Подобрать тренировку</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if workouts %}
+        <div class="row">
+            <h2 style="margin-bottom:20px;">Программы тренировок</h2>
+            {% for w in workouts %}
+                <div class="col-md-3">
+                    <div class="card" style="width: 18rem; margin-right: 2rem; margin-bottom: 2rem;">
+    <!--                  <img src="..." class="card-img-top" alt="...">-->
+                        <div class="card card-body">
+                            <h5 class="card-title">{{w.name}}</h5>
+                            <p class="card-text">{{w.desc}}</p>
+                            <a href="{% url 'workout' w.slug %}" class="btn btn-primary">Перейти к тренировке</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="col-md-3">
+                <a href="{% url 'workouts' %}" class="btn btn-primary">Смотреть все</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if recipes %}
+        <div class="row">
+            <h2 style="margin-bottom:20px;">Рецепты спортивного питания</h2>
+            {% for recipe in recipes %}
+                <div class="col-md-3" style="margin-left: 0.5rem;">
+                    <div class="card" style="width: 18rem; margin-right: 2rem; margin-bottom: 2rem;">
+    <!--                  <img src="..." class="card-img-top" alt="...">-->
+                        <div class="card card-body">
+                            <h5 class="card-title">{{recipe.title}}</h5>
+                            <p class="card-text">{{recipe.desc}}</p>
+                            <a href="{% url 'recipe' recipe.slug %}" class="btn btn-primary">Перейти к рецепту</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock %}

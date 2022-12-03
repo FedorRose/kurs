@@ -1,0 +1,24 @@
+{% extends 'main/index.html' %}
+{% block main %}
+    <div class="row">
+        <h2 style="margin-bottom:20px;">Справочник упражнений</h2>
+        <div style="white-space: nowrap;display:inline-block;">
+            <form action="{% url 'exercises' %}" method="get">
+                <input name="q" type="text" value="{{ request.GET.q }}" placeholder="Поиск..." class="form-control" style="width:25rem;display:inline-block;">
+                <button type="submit" class="btn btn-outline-secondary" style="display:inline-block; margin-bottom:0.245rem;">Найти</button>
+            </form><br><br><br>
+        </div>
+        {% for e in guide_exercises %}
+            <div class="col-md-3" id="{{e.slug}}" style="margin-right:40rem;">
+                <div class="card" style="width: 40rem; margin-right: 2rem; margin-bottom: 2rem;">
+<!--                  <img src="..." class="card-img-top" alt="...">-->
+                    <div class="card card-body">
+                        <h5 class="card-title">{{e.name}}</h5>
+                        <p class="card-text">{{e.desc}}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+

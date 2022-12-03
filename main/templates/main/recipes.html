@@ -1,0 +1,31 @@
+{% extends 'main/index.html' %}
+{% block main %}
+    {% if recipes %}
+        <div class="row">
+            <h2 style="margin-bottom:20px;">Рецепты спортивного питания</h2>
+            {% for recipe in recipes %}
+                <div class="col-md-3" style="margin-left: 0.5rem;">
+                    <div class="card" style="width: 18rem; margin-right: 2rem; margin-bottom: 2rem;">
+    <!--                  <img src="..." class="card-img-top" alt="...">-->
+                        <div class="card card-body">
+                            <h5 class="card-title">{{recipe.title}}</h5>
+                            <p class="card-text">{{recipe.desc}}</p>
+                            <a href="{% url 'recipe' recipe.slug %}" class="btn btn-primary">Перейти к рецепту</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if recipe %}
+        <div class="row">
+            <h2>{{recipe.title}}</h2>
+            <div class="col-md-3">
+<!--                  <img src="..." class="card-img-top" alt="...">-->
+                <p class="card-text">{{recipe.desc}}</p>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
