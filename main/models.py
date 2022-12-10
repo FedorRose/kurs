@@ -82,6 +82,7 @@ class UserWorkout(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     desc = models.CharField(max_length=500)
+    ings = models.TextField(null=True)
     slug = models.SlugField(null=True)
     photo = models.ImageField(null=True)
     author = models.ForeignKey(User, null=True, on_delete=SET_NULL)
@@ -92,6 +93,8 @@ class Recipe(models.Model):
 
 class RecipeStep(models.Model):
     text = models.TextField()
+    number = models.PositiveSmallIntegerField(null=True, default=0)
+    photo = models.ImageField(null=True)
     recipe = models.ForeignKey('Recipe', null=True, on_delete=SET_NULL)
 
 

@@ -20,6 +20,7 @@ class ExerciseAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
+admin.site.register(RecipeStep)
 admin.site.register(Event)
 admin.site.register(Category)
 admin.site.register(Inventory)

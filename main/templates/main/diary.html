@@ -48,14 +48,14 @@
                         if (m[0] == 'сентябрь') { m[0] = '09' }
                         if (m[0] == 'октября') { m[0] = '10' }
                         if (m[0] == 'ноября') { m[0] = '11' }
-                        if (m[0] == 'декабря') { m[0] = '12' }
+                        if ((m[0] == 'декабря') || (m[0] == 'December')) { m[0] = '12' }
 
                         let id = $(this).text();
                         if (id=='\xa0') { return; };
                         let date = m[1]+'-'+m[0]+'-'+id;
 
                         var that = $(this);
-                        $.get('http://127.0.0.1:8000/diary_note_exist/'+date, function(data) {
+                        $.get('http://fkolonistov.pythonanywhere.com/diary_note_exist/'+date, function(data) {
                            if (data == '1') { $(that).css("font-weight", "bold"); }
                            else { $(that).css("color", "#3b3b3b"); };
 
@@ -78,12 +78,12 @@
                         if (m[0] == 'сентябрь') { m[0] = '09' }
                         if (m[0] == 'октября') { m[0] = '10' }
                         if (m[0] == 'ноября') { m[0] = '11' }
-                        if (m[0] == 'декабря') { m[0] = '12' }
+                        if ((m[0] == 'декабря') || (m[0] == 'December')) { m[0] = '12' }
 
                         let id = $(this).text();
                         let date = m[1]+'-'+m[0]+'-'+id;
 
-                        $.get('http://127.0.0.1:8000/diary_note/'+date, function(data) {
+                        $.get('http://fkolonistov.pythonanywhere.com/diary_note/'+date, function(data) {
                           // $(console.log(data));
                           var res = data.split('=');
                           $("#title").html(res[0]);
@@ -95,7 +95,7 @@
                     sel.on('change', function(){
                       let d = $(this.options[this.selectedIndex]).val();
                       let w = $("#id_workout").val();
-                      $.get('http://127.0.0.1:8000/workout_day/'+w+'/'+encodeURIComponent(d), function(data) {
+                      $.get('http://fkolonistov.pythonanywhere.com/workout_day/'+w+'/'+encodeURIComponent(d), function(data) {
                         $("#id_text").html(data);
                       });
                     });

@@ -21,11 +21,16 @@
     {% if recipe %}
         <div class="row">
             <h2>{{recipe.title}}</h2>
-            <div class="col-md-3">
-<!--                  <img src="..." class="card-img-top" alt="...">-->
-                <p class="card-text">{{recipe.desc}}</p>
-            </div>
-        </div>
+            <img src="{{ recipe.photo.url }}" class="card-img-top" alt="..." style="height: 18rem; width: 22rem; border-radius: 3px; margin-bottom:2rem;">
+            <h5>{{recipe.desc}}</h5>
+            <span style="margin-top:1rem; white-space: pre-line">{{recipe.ings}}</span><br><br><br>
+        </div><br><br>
+        <div class="row">
+            {% for step in steps %}
+                <div style="width:50rem; margin-bottom:0.5rem;">
+                    <span style="width:50rem; display:inline-block;">{{step.text}}</span><br><br>
+                </div><br><br><br>
+            {% endfor %}
+        </div><br><br>
     {% endif %}
-
 {% endblock %}

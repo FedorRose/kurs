@@ -88,12 +88,13 @@ def start_workout(request, slug=None):
 
 
 def recipes(request, slug=None):
-    recipes, current_recipe = None, None
+    recipes, current_recipe, steps = None, None, None
     if slug is None:
         recipes = Recipe.objects.all()
     else:
         current_recipe = Recipe.objects.get(slug=slug)
-    return render(request, 'main/recipes.html', context={'recipe': current_recipe, 'recipes': recipes,
+        steps = RecipeStep.objects.filter(recipe=current_recipe)
+    return render(request, 'main/recipes.html', context={'recipe': current_recipe, 'recipes': recipes, 'steps': steps,
                                                          'title': 'Рецепты', 'menu': menu})
 
 
@@ -117,6 +118,7 @@ def diary(request):
         month = datetime.now().month
 
     form = EventForm(initial={workout: ActiveWorkout.objects.filter(user=request.user)})
+    print(form)
     a = calendar.LocaleHTMLCalendar().formatmonth(int(year), int(month), withyear=True)
     return render(request, 'main/diary.html', context={'title': 'Дневник тренировок', 'menu': menu,
                                                        'form': form, 'calendar': a})
