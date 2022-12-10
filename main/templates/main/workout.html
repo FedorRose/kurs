@@ -8,10 +8,14 @@
         <h5>Уровень сложности - {{workout.complexity}}</h5>
         <h5>Тренер {{workout.trainer}}</h5><br><br><br>
         <h5>{{workout.desc}}</h5><br><br><br>
-        {% if active %}
-            <a href="#" class="btn btn-success" style="width:15rem;">Открыть календарь</a>
+        {% if request.user.is_authenticated %}
+            {% if active %}
+                <a href="{% url 'diary' %}" class="btn btn-success" style="width:15rem;">Открыть календарь</a>
+            {% else %}
+                <a href="{% url 'start_workout' workout.slug %}" class="btn btn-primary" style="width:15rem;">Начать тренировку!</a>
+            {% endif %}
         {% else %}
-            <a href="{% url 'start_workout' workout.slug %}" class="btn btn-primary" style="width:15rem;">Начать тренировку!</a>
+            <h5>Зарегистрируйтесь или войдите, чтобы начать тренировку и следить за тренировочным процессом!</h5>
         {% endif %}
     </div><br><br>
 

@@ -68,6 +68,11 @@ class ExerciseInWorkout(models.Model):
     workout = models.ForeignKey('Workout', null=True, on_delete=SET_NULL)
     exercise = models.ForeignKey('Exercise', null=True, on_delete=SET_NULL)
 
+    def __str__(self):
+        return f'{self.exercise.name}\n' \
+               f'Подходы: {self.approaches}\n' \
+               f'Повторения: {self.repetitions}\n\n'
+
 
 class UserWorkout(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
@@ -94,9 +99,12 @@ class ActiveWorkout(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
     workout = models.ForeignKey('Workout', on_delete=CASCADE)
 
+    def __str__(self):
+        return self.workout.name
+
 
 class Event(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
-    workout = models.ForeignKey('Workout', on_delete=CASCADE)
-    date = models.DateTimeField()
+    workout = models.ForeignKey('ActiveWorkout', null=True, on_delete=SET_NULL)
+    date = models.DateField()
     text = models.TextField()

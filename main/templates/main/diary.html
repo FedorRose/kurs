@@ -1,48 +1,128 @@
 {% extends 'main/index.html' %}
 {% block main %}
-    <div class="row">
-        <div>{{calendar |safe}}</div>
-    </div>
 
     <div class="row">
-        {% if notes %}
-            {% for n in notes %}
-                <div class="col-md-3" style="margin-right:40rem;">
-                    <div class="card" style="width: 40rem; margin-right: 2rem; margin-bottom: 2rem;">
-    <!--                  <img src="..." class="card-img-top" alt="...">-->
-                        <div class="card card-body">
-                            <h5 class="card-title">{{n.workout.name}} - {{n.date}}</h5>
-                            <p class="card-text">{{n.text}}</p>
-                        </div>
+        <div class="col-md-6">
+            {{calendar |safe}}
+        </div>
+        <div class="col-md-3" style="margin-top:5rem;">
+            <div class="col-md-3" style="margin-right:40rem;">
+                <div class="card" style="width: 40rem; margin-right: 2rem; margin-bottom: 2rem;">
+                    <div class="card card-body">
+                        <h5 class="card-title" id="title"></h5>
+                        <textarea class="form-control" id="text" rows="12" readonly="readonly" style="overflow:auto; resize:none"></textarea>
                     </div>
                 </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+            </div>
+        </div>
+    </div><br><br>
+
     <div class="row">
-        <div class="col-md-3" style="margin-right:40rem;">
-            <form action="{% url 'exercises' %}" method="get">
-                <input name="q" type="text" value="{{ request.GET.q }}" placeholder="Поиск..." class="form-control" style="width:25rem;display:inline-block;">
-                <button type="submit" class="btn btn-outline-secondary" style="display:inline-block; margin-bottom:0.245rem;">Найти</button>
+        <div class="col-md-3 mx-auto text-center" style="margin-right:40rem;">
+            <form action="{% url 'diary' %}" method="post">{% csrf_token %}
+                {{ form.date }} <br>
+                {{ form.workout }} <br>
+                {{ form.day }} <br>
+                {{ form.text }} <br>
+
+                <script>
+                  $(function () {
+                    $("#id_date").datepicker({
+                      format:'dd/mm/yyyy',
+                    });
+                    $("#id_date").addClass('form-control');
+                  });
+
+                  $(function () {
+                    $("td").each(function() {
+                        let m = $("th[class='month']").text();
+                        m = m.split(' ');
+                        if (m[0] == 'января') { m[0] = '01' }
+                        if (m[0] == 'февраля') { m[0] = '02' }
+                        if (m[0] == 'марта') { m[0] = '03' }
+                        if (m[0] == 'апреля') { m[0] = '04' }
+                        if (m[0] == 'мая') { m[0] = '05' }
+                        if (m[0] == 'июня') { m[0] = '06' }
+                        if (m[0] == 'июля') { m[0] = '07' }
+                        if (m[0] == 'августа') { m[0] = '08' }
+                        if (m[0] == 'сентябрь') { m[0] = '09' }
+                        if (m[0] == 'октября') { m[0] = '10' }
+                        if (m[0] == 'ноября') { m[0] = '11' }
+                        if (m[0] == 'декабря') { m[0] = '12' }
+
+                        let id = $(this).text();
+                        if (id=='\xa0') { return; };
+                        let date = m[1]+'-'+m[0]+'-'+id;
+
+                        var that = $(this);
+                        $.get('http://127.0.0.1:8000/diary_note_exist/'+date, function(data) {
+                           if (data == '1') { $(that).css("font-weight", "bold"); }
+                           else { $(that).css("color", "#3b3b3b"); };
+
+                        });
+                    });
+                  });
+
+                  $(function () {
+                    $("td").on('click', function(){
+                        let m = $("th[class='month']").text();
+                        m = m.split(' ');
+                        if (m[0] == 'января') { m[0] = '01' }
+                        if (m[0] == 'февраля') { m[0] = '02' }
+                        if (m[0] == 'марта') { m[0] = '03' }
+                        if (m[0] == 'апреля') { m[0] = '04' }
+                        if (m[0] == 'мая') { m[0] = '05' }
+                        if (m[0] == 'июня') { m[0] = '06' }
+                        if (m[0] == 'июля') { m[0] = '07' }
+                        if (m[0] == 'августа') { m[0] = '08' }
+                        if (m[0] == 'сентябрь') { m[0] = '09' }
+                        if (m[0] == 'октября') { m[0] = '10' }
+                        if (m[0] == 'ноября') { m[0] = '11' }
+                        if (m[0] == 'декабря') { m[0] = '12' }
+
+                        let id = $(this).text();
+                        let date = m[1]+'-'+m[0]+'-'+id;
+
+                        $.get('http://127.0.0.1:8000/diary_note/'+date, function(data) {
+                          // $(console.log(data));
+                          var res = data.split('=');
+                          $("#title").html(res[0]);
+                          $(console.log(res[1]));
+                          $("#text").html(res[1]);
+                        });
+                    });
+                    let sel = $("#id_day");
+                    sel.on('change', function(){
+                      let d = $(this.options[this.selectedIndex]).val();
+                      let w = $("#id_workout").val();
+                      $.get('http://127.0.0.1:8000/workout_day/'+w+'/'+encodeURIComponent(d), function(data) {
+                        $("#id_text").html(data);
+                      });
+                    });
+                  });
+
+                </script>
+
+                <button type="submit" class="btn btn-outline-secondary" style="display:inline-block; margin-bottom:0.245rem;">Добавить запись</button>
+
             </form><br><br><br>
         </div>
     </div>
 
     <style>
-        .month {
-            width: 50rem;
-        }
+        .month { width: 40rem; }
+        tr { height: 4rem; }
+       /* select {  } */
     </style>
+
 {% endblock %}
 
-
-
-<table border="0" cellpadding="0" cellspacing="0" class="month">
-<tr><th colspan="7" class="month">декабря 2022</th></tr>
-<tr><th class="mon">Пн</th><th class="tue">Вт</th><th class="wed">Ср</th><th class="thu">Чт</th><th class="fri">Пт</th><th class="sat">Сб</th><th class="sun">Вс</th></tr>
-<tr><td class="noday">&nbsp;</td><td class="noday">&nbsp;</td><td class="noday">&nbsp;</td><td class="thu">1</td><td class="fri">2</td><td class="sat">3</td><td class="sun">4</td></tr>
-<tr><td class="mon">5</td><td class="tue">6</td><td class="wed">7</td><td class="thu">8</td><td class="fri">9</td><td class="sat">10</td><td class="sun">11</td></tr>
-<tr><td class="mon">12</td><td class="tue">13</td><td class="wed">14</td><td class="thu">15</td><td class="fri">16</td><td class="sat">17</td><td class="sun">18</td></tr>
-<tr><td class="mon">19</td><td class="tue">20</td><td class="wed">21</td><td class="thu">22</td><td class="fri">23</td><td class="sat">24</td><td class="sun">25</td></tr>
-<tr><td class="mon">26</td><td class="tue">27</td><td class="wed">28</td><td class="thu">29</td><td class="fri">30</td><td class="sat">31</td><td class="noday">&nbsp;</td></tr>
-</table>
+<!--<table border="0" cellpadding="0" cellspacing="0" class="month">-->
+<!--<tr><th colspan="7" class="month">декабря 2022</th></tr>-->
+<!--<tr><th class="mon">Пн</th><th class="tue">Вт</th><th class="wed">Ср</th><th class="thu">Чт</th><th class="fri">Пт</th><th class="sat">Сб</th><th class="sun">Вс</th></tr>-->
+<!--<tr><td class="noday">&nbsp;</td><td class="noday">&nbsp;</td><td class="noday">&nbsp;</td><td class="thu">1</td><td class="fri">2</td><td class="sat">3</td><td class="sun">4</td></tr>-->
+<!--<tr><td class="mon">5</td><td class="tue">6</td><td class="wed">7</td><td class="thu">8</td><td class="fri">9</td><td class="sat">10</td><td class="sun">11</td></tr>-->
+<!--<tr><td class="mon">12</td><td class="tue">13</td><td class="wed">14</td><td class="thu">15</td><td class="fri">16</td><td class="sat">17</td><td class="sun">18</td></tr>-->
+<!--<tr><td class="mon">19</td><td class="tue">20</td><td class="wed">21</td><td class="thu">22</td><td class="fri">23</td><td class="sat">24</td><td class="sun">25</td></tr>-->
+<!--<tr><td class="mon">26</td><td class="tue">27</td><td class="wed">28</td><td class="thu">29</td><td class="fri">30</td><td class="sat">31</td><td class="noday">&nbsp;</td></tr>-->
+<!--</table>-->

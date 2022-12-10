@@ -11,14 +11,31 @@
         {% for e in guide_exercises %}
             <div class="col-md-3" id="{{e.slug}}" style="margin-right:40rem;">
                 <div class="card" style="width: 40rem; margin-right: 2rem; margin-bottom: 2rem;">
-<!--                  <img src="..." class="card-img-top" alt="...">-->
                     <div class="card card-body">
                         <h5 class="card-title">{{e.name}}</h5>
                         <p class="card-text">{{e.desc}}</p>
+                        <a href="{% url 'exercise' e.slug %}" style="color:black;">Показать</a>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+
+<script>
+    $(function () {
+        var ar = document.querySelectorAll("[id='vid_main']");
+        // var a = $("#vid_main");
+        $.each(ar, function(n, v) {
+            console.log(n, v);
+            v.on('mouseout', function() {
+                $("#vid").css('display','none');
+            });
+            v.on('mouseover', function() {
+                $("#vid").css('display','block');
+            });
+        });
+    });
+</script>
+
 {% endblock %}
 

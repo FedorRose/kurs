@@ -1,14 +1,15 @@
+from datetime import datetime
+
+from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.db.models import Q
 from calendar import HTMLCalendar
 from datetime import date
-from itertools import groupby
 import calendar
-import locale
-from django.utils.html import conditional_escape as esc
 from .forms import EventForm
 from .models import *
 
@@ -27,7 +28,9 @@ def home(request):
 
 
 def workouts(request):
-    active_workouts = ActiveWorkout.objects.filter(user=request.user)
+    active_workouts = None
+    if request.user.is_authenticated:
+        active_workouts = ActiveWorkout.objects.filter(user=request.user)
     workouts = Workout.objects.all()
     return render(request, 'main/workouts.html', context={'workouts': workouts, 'title': 'Тренировки', 'menu': menu,
                                                           'active_workouts': active_workouts})
@@ -35,7 +38,9 @@ def workouts(request):
 
 def workout(request, slug=None):
     current_workout = Workout.objects.get(slug=slug)
-    active = ActiveWorkout.objects.filter(workout=current_workout, user=request.user)
+    active = None
+    if request.user.is_authenticated:
+        active = ActiveWorkout.objects.filter(workout=current_workout, user=request.user)
     exercises_1 = ExerciseInWorkout.objects.filter(workout=current_workout, day=1)
     exercises_2 = ExerciseInWorkout.objects.filter(workout=current_workout, day=2)
     exercises_3 = ExerciseInWorkout.objects.filter(workout=current_workout, day=3)
@@ -53,6 +58,12 @@ def exercises_page(request):
     else:
         guide_exercises = Exercise.objects.all()
     return render(request, 'main/exercises.html', context={'guide_exercises': guide_exercises, 'title':
+                                                           'Упражнения', 'menu': menu})
+
+
+def exercise_page(request, slug=None):
+    guide_exercise = Exercise.objects.get(slug=slug)
+    return render(request, 'main/exercise.html', context={'guide_exercise': guide_exercise, 'title':
                                                            'Упражнения', 'menu': menu})
 
 
@@ -93,15 +104,40 @@ def diary(request):
             event = form.save(commit=False)
             event.user = request.user
             event.save()
-    else:
-        form = EventForm()
+            return HttpResponseRedirect(reverse('diary'))
 
-    a = calendar.LocaleHTMLCalendar()
-    a = a.formatmonth(2022, 12, withyear=True)
-    print(a)
-    notes = Event.objects.filter(user=request.user)
-    return render(request, 'main/diary.html', context={'notes': notes, 'title': 'Дневник тренировок',
-                                                       'menu': menu, 'form': form, 'calendar': a})
+    year, month = None, None
+    if request.method == 'GET':
+        month = request.GET.get('month')
+        year = request.GET.get('year')
+
+    if year is None:
+        year = datetime.now().year
+    if month is None:
+        month = datetime.now().month
+
+    form = EventForm(initial={workout: ActiveWorkout.objects.filter(user=request.user)})
+    a = calendar.LocaleHTMLCalendar().formatmonth(int(year), int(month), withyear=True)
+    return render(request, 'main/diary.html', context={'title': 'Дневник тренировок', 'menu': menu,
+                                                       'form': form, 'calendar': a})
+
+
+def diary_note(request, curr_date):
+    note = Event.objects.filter(date=curr_date).last()
+    if note is not None:
+        return HttpResponse("{} - {} ={}".format(note.date, note.workout, note.text))
+    else:
+        return HttpResponse("=")
+
+
+def diary_note_exist(request, curr_date):
+    return HttpResponse('0') if Event.objects.filter(date=curr_date).last() is None else HttpResponse('1')
+
+
+def workout_day(request, pk, day):
+    work = ActiveWorkout.objects.get(pk=pk).workout
+
+    return HttpResponse(ExerciseInWorkout.objects.filter(workout=work, day=day))
 
 
 class SignUpView(generic.CreateView):
@@ -110,39 +146,6 @@ class SignUpView(generic.CreateView):
     template_name = 'registration/signup.html'
 
 
-# class WorkoutCalendar(HTMLCalendar):
-#
-#     def __init__(self, workouts):
-#         super(WorkoutCalendar, self).__init__()
-#         self.workouts = self.group_by_day(workouts)
-#
-#     def formatday(self, day, weekday):
-#         if day != 0:
-#             cssclass = self.cssclasses[weekday]
-#             if date.today() == date(self.year, self.month, day):
-#                 cssclass += ' today'
-#             if day in self.workouts:
-#                 cssclass += ' filled'
-#                 body = ['<ul>']
-#                 for workout in self.workouts[day]:
-#                     body.append('<li>')
-#                     body.append('<a href="%s">' % workout.get_absolute_url())
-#                     body.append(esc(workout.title))
-#                     body.append('</a></li>')
-#                 body.append('</ul>')
-#                 return self.day_cell(cssclass, '%d %s' % (day, ''.join(body)))
-#             return self.day_cell(cssclass, day)
-#         return self.day_cell('noday', '&nbsp;')
-#
-#     def formatmonth(self, year, month):
-#         self.year, self.month = year, month
-#         return super(WorkoutCalendar, self).formatmonth(year, month)
-#
-#     def group_by_day(self, workouts):
-#         field = lambda workout: workout.performed_at.day
-#         return dict(
-#             [(day, list(items)) for day, items in groupby(workouts, field)]
-#         )
-#
-#     def day_cell(self, cssclass, body):
-#         return '<td class="%s">%s</td>' % (cssclass, body)
+def logout_user(request):
+    logout(request)
+    return redirect('home')

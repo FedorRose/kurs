@@ -1,0 +1,18 @@
+{% extends 'main/index.html' %}
+{% block main %}
+    <div class="row">
+        <h2 style="margin-bottom:20px;">Справочник упражнений</h2>
+        <div class="col-md-3" id="{{guide_exercise.slug}}" style="margin-right:40rem;">
+            <div class="card" style="width: 40rem; margin-right: 2rem; margin-bottom: 2rem;">
+                <div class="card card-body">
+                    <h5 class="card-title">{{guide_exercise.name}}</h5>
+                    <p class="card-text">{{guide_exercise.desc}}</p>
+                    {% if guide_exercise.video %}
+                        <img src="{{ guide_exercise.video }}" class="card-img-top" style="width: 20rem; height: 20rem;" id="vid">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

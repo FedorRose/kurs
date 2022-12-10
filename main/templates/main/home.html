@@ -6,11 +6,11 @@
         {% if active_workouts %}
             {% for aw in active_workouts %}
                 <div class="col-md-3">
-                    <div class="card" style="width: 18rem; margin-right: 2rem; margin-bottom: 2rem;">
-<!--                              <img src="..." class="card-img-top" alt="...">-->
+                    <div class="card" style="width: 18rem; height: 12rem; margin-right: 2rem; margin-bottom: 2rem;">
+                      <img src="{{ aw.workout.photo.url }}" class="card-img-top" alt="..." style="height: 14rem; width: 18rem; border-radius: 3px;">
                       <div class="card card-body">
                         <h5 class="card-title">{{aw.workout.name}}</h5>
-                        <p class="card-text">{{aw.workout.desc}}</p>
+                        <p class="card-text">{{ aw.workout.desc|truncatechars:50 }}</p>
                         <a href="{% url 'workout' aw.workout.slug %}" class="btn btn-primary">Перейти к тренировке</a>
                       </div>
                     </div>
@@ -25,18 +25,19 @@
             </div>
         {% endif %}
     </div>
+{% if active_workouts %}<br><br><br><br><br><br><br><br><br><br>{% endif %}
 
     {% if workouts %}
         <div class="row">
             <h2 style="margin-bottom:20px;">Программы тренировок</h2>
             {% for w in workouts %}
                 <div class="col-md-3">
-                    <div class="card" style="width: 18rem; margin-right: 2rem; margin-bottom: 2rem;">
-    <!--                  <img src="..." class="card-img-top" alt="...">-->
+                    <div class="card" style="width: 18rem; height: 27.3rem; margin-right: 2rem; margin-bottom: 2rem;">
+                      <img src="{{ w.photo.url }}" class="card-img-top" alt="..." style="height: 14rem; width: 18rem; border-radius: 3px;">
                         <div class="card card-body">
                             <h5 class="card-title">{{w.name}}</h5>
-                            <p class="card-text">{{w.desc}}</p>
-                            <a href="{% url 'workout' w.slug %}" class="btn btn-primary">Перейти к тренировке</a>
+                            <p class="card-text">{{ w.desc|truncatechars:50 }}</p>
+                            <a href="{% url 'workout' w.slug %}" class="btn btn-primary" style="position: absolute; margin-top:9rem;">Перейти к тренировке</a>
                         </div>
                     </div>
                 </div>
@@ -52,12 +53,12 @@
             <h2 style="margin-bottom:20px;">Рецепты спортивного питания</h2>
             {% for recipe in recipes %}
                 <div class="col-md-3" style="margin-left: 0.5rem;">
-                    <div class="card" style="width: 18rem; margin-right: 2rem; margin-bottom: 2rem;">
-    <!--                  <img src="..." class="card-img-top" alt="...">-->
+                    <div class="card" style="width: 18rem; height: 25rem; margin-right: 2rem; margin-bottom: 2rem;">
+                      <img src="{{ recipe.photo.url }}" class="card-img-top" alt="..." style="height: 14rem; width: 18rem; border-radius: 3px;">
                         <div class="card card-body">
                             <h5 class="card-title">{{recipe.title}}</h5>
-                            <p class="card-text">{{recipe.desc}}</p>
-                            <a href="{% url 'recipe' recipe.slug %}" class="btn btn-primary">Перейти к рецепту</a>
+                            <p class="card-text">{{recipe.desc|truncatechars:50}}</p>
+                            <a href="{% url 'recipe' recipe.slug %}" class="btn btn-primary" style="position: absolute; margin-top:7rem;">Перейти к рецепту</a>
                         </div>
                     </div>
                 </div>
